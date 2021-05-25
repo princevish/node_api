@@ -58,6 +58,8 @@ module.exports.userSign = async (req, res) => {
 
 module.exports.userSignup = async (req, res) => {
 
+ try{
+     
     const messages = []
     if (!validationResult(req).isEmpty()) {
         const errors = validationResult(req).array()
@@ -74,7 +76,7 @@ module.exports.userSignup = async (req, res) => {
         mobile,
         password
     } = req.body;
- try{const finduser = await User.findOne({
+    const finduser = await User.findOne({
     email
 });
 if (!finduser) {

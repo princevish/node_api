@@ -15,7 +15,9 @@ module.exports.getRoom = async (req, res) => {
 
 module.exports.addRoom = async (req, res) => {
 
-    const messages = []
+    
+    try {
+        const messages = []
     if (!validationResult(req).isEmpty()) {
         const errors = validationResult(req).array()
         for (const i of errors) {
@@ -25,7 +27,6 @@ module.exports.addRoom = async (req, res) => {
             message: message
         });
     }
-    try {
         const {
             name,
             price,
