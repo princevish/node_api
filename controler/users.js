@@ -1,4 +1,3 @@
-
 const User = require('../models/usersModel');
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
@@ -14,20 +13,21 @@ module.exports.userSign = async (req, res) => {
         for (const i of errors) {
             messages.push(i)
         }
-        res.status(303).json({
+        return res.status(303).json({
             message: messages
         });
     }
-    const {
-        email,
-        password
-    } = req.body
+
     try {
+        const {
+            email,
+            password
+        } = req.body
         const finduser = await User.findOne({
             email
         });
         if (!finduser) {
-            res.status(303).json({
+            return res.status(303).json({
                 message: "User not found available"
             });
         } else {
@@ -38,12 +38,17 @@ module.exports.userSign = async (req, res) => {
                     email: finduser.email
                 }, process.env.SECRET_CODE);
 
-                res.status(200).json({
+                return res.status(200).cookie('key', token, {
+                    sameSite: 'strict',
+                    path: '/',
+                    httpOnly: true,
+                    expires: new Date(new Date().getTime() + 100 * 1000)
+                }).json({
                     id: finduser._id,
                     token: token
                 });
             } else {
-                res.status(303).json({
+                return res.status(303).json({
                     message: "password not match"
                 });
             }
@@ -58,60 +63,85 @@ module.exports.userSign = async (req, res) => {
 
 module.exports.userSignup = async (req, res) => {
 
- try{
-     
-    const messages = []
-    if (!validationResult(req).isEmpty()) {
-        const errors = validationResult(req).array()
-        for (const i of errors) {
-            messages.push(i);
+    try {
+        console.log(req.file.filename)
+        const messages = []
+        if (!validationResult(req).isEmpty()) {
+            const errors = validationResult(req).array()
+            for (const i of errors) {
+                messages.push(i);
+            }
+            return res.status(303).json({
+                message: messages
+            });
         }
-        return res.status(303).json({
-            message: messages
+        const {
+            email,
+            name,
+            mobile,
+            password,
+            image
+        } = req.body;
+        const finduser = await User.findOne({
+            email
+        });
+        if (!finduser && email && name && mobile && password) {
+
+            const pass = await bcrypt.hash(password, 12);
+            const user = await User.create({
+                email: email,
+                name: name,
+                mobile: mobile,
+                password: pass,
+                image:`profile/${req.file.filename}`
+                
+            });
+            const token = jwt.sign({
+                id: user.id,
+                email: user.email
+            }, process.env.SECRET_CODE);
+
+           return res.status(201).cookie('key', token, {
+                sameSite: 'strict',
+                path: '/',
+                httpOnly: true,
+                expires: new Date(new Date().getTime() + 100 * 1000)
+            }).json({
+                user: user,
+                token: token
+            });
+
+        } else {
+           return res.status(303).json({
+                message: "User email not available"
+            });
+
+        }
+    } catch (err) {
+       return res.status(303).json({
+            message: err
         });
     }
-    const {
-        email,
-        name,
-        mobile,
-        password
-    } = req.body;
-    const finduser = await User.findOne({
-    email
-});
-if (!finduser) {
-
-    const pass = await bcrypt.hash(password, 12);
-    const user = await User.create({
-        email: email,
-        name: name,
-        mobile: mobile,
-        password: pass
-    });
-    user.save();
-    const token = jwt.sign({
-        id: user.id,
-        email: user.email
-    }, process.env.SECRET_CODE);
-
-    res.status(201).cookie('key',token,{sameSite:'strict',path:'/',httpOnly:true}).json({
-        user: user,
-        token: token
-    });
-
-} else {
-    res.status(303).json({
-        message: "User email not available"
-    });
 
 }
-}catch(err){
-    res.status(303).json({
-        message: err
-    });
- }
 
-    
+module.exports.logOut=(req, res) => {
+    try {
+        if (req.cookies.key) {
+            res.clearCookie('key');
+            res.status(302).json({
+                msg: "logout"
+            });
+        } else {
+            res.status(404).json({
+                error: "cookie not found"
+            });
+        }
 
+    } catch (err) {
+        res.status(404).json({
+            error: err
+        });
+    }
 
 }

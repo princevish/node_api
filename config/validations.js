@@ -6,6 +6,7 @@ module.exports.registerValidator = () => {
         check('email').notEmpty().withMessage('email is required'),
         check('email').isEmail().withMessage('email is not valid'),
         check('name').notEmpty().withMessage('Name is required'),
+       
         check('password')
         .notEmpty()
         .withMessage('password is required')

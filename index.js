@@ -11,6 +11,7 @@ app.use(express.urlencoded({
 }))
 app.use(express.json());
 app.use(cookieParser());
+app.use('/profile', express.static('upload/profile'));
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
