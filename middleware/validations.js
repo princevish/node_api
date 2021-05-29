@@ -6,7 +6,8 @@ module.exports.registerValidator = () => {
         check('email').notEmpty().withMessage('email is required'),
         check('email').isEmail().withMessage('email is not valid'),
         check('name').notEmpty().withMessage('Name is required'),
-       
+        
+
         check('password')
         .notEmpty()
         .withMessage('password is required')
@@ -22,6 +23,7 @@ module.exports.registerValidator = () => {
             max: 10
         })
         .withMessage('mobile no. must be 10 digit'),
+       
     ]
 }
 module.exports.loginValidator = () => {
@@ -46,9 +48,10 @@ module.exports.roomValidator = () => {
         check('address').notEmpty().withMessage('address is required'),
         check('description').notEmpty().withMessage('description is required'),
         check('images').notEmpty().withMessage('image is required'),
-        check('details.listed_by').notEmpty().withMessage('owner is required'),
-        check('details.parking').notEmpty().withMessage('parking is required'),
-        check('details.bathrooms').notEmpty().withMessage('bathrooms is required'),
+        check('listed_by').notEmpty().withMessage('owner is required'),
+        check('parking').notEmpty().withMessage('parking is required'),
+        check('bathrooms').notEmpty().withMessage('bathrooms is required'),
+        
 
     ]
 }
