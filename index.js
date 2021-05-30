@@ -11,6 +11,15 @@ app.use(express.urlencoded({
 }))
 app.use(express.json());
 app.use(cookieParser());
+
+// multer errors
+app.use(function(err,req,res,next){
+    console.log("errr");
+    res.status(500).json({err:err});
+})
+app.use((req,res,next)=>{
+    res.status(404).json({error:'url not found'});
+})
 app.use('/profile', express.static('upload/profile'));
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');

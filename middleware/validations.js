@@ -1,6 +1,7 @@
 const {
     check
 } = require('express-validator');
+const fs = require('fs');
 module.exports.registerValidator = () => {
     return [
         check('email').notEmpty().withMessage('email is required'),
@@ -54,4 +55,26 @@ module.exports.roomValidator = () => {
         
 
     ]
+}
+
+module.exports.imagevalid=(req,res,next)=>{
+  if (typeof(req.file)=='undefined' || typeof(req.body)=='undefined'){
+      return res.status(400).json({error:"file not proble to send file"})
+  }
+  console.log(req.file);
+  if(!req.file.filename){
+   return res.status(400).json({error:"image field required"})
+  }
+  if (req.file.mimetype == "image/png" || req.file.mimetype == "image/jpg" || req.file.mimetype == "image/jpeg") {
+    //
+  if(req.file.size > 1024*1024*3){
+    fs.unlinkSync(`upload/profile/${req.file.filename}`)
+    return res.status(400).json({error:"file to large 3mb"})
+  }
+  
+  }else{
+   fs.unlinkSync(`upload/profile/${req.file.filename}`)
+   return res.status(400).json({error:"file not supported"})
+}
+  next()
 }

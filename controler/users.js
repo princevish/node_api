@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const {
     validationResult
 } = require('express-validator');
-
+const fs =require('fs')
 
 module.exports.userSign = async (req, res) => {
     const messages = []
@@ -64,9 +64,11 @@ module.exports.userSign = async (req, res) => {
 module.exports.userSignup = async (req, res) => {
 
     try {
-        console.log(req.file.filename)
+         /// validation check result
         const messages = []
-        if (!validationResult(req).isEmpty()) {
+        if (!validationResult(req).isEmpty()) { 
+            // remove profile image
+            fs.unlinkSync(`upload/profile/${req.file.filename}`)
             const errors = validationResult(req).array()
             for (const i of errors) {
                 messages.push(i);
@@ -75,12 +77,12 @@ module.exports.userSignup = async (req, res) => {
                 message: messages
             });
         }
+
         const {
             email,
             name,
             mobile,
-            password,
-            image
+            password
         } = req.body;
         const finduser = await User.findOne({
             email
@@ -112,6 +114,9 @@ module.exports.userSignup = async (req, res) => {
             });
 
         } else {
+            if(req.file.filename){
+                // profile image remove
+            fs.unlinkSync(`upload/profile/${req.file.filename}`)}
            return res.status(303).json({
                 message: "User email not available"
             });
