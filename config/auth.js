@@ -12,7 +12,7 @@ const auth = async(req,res,next)=>{
          req.userEmail=token.email;
          next()
     }catch(err){
-        res.status(401).json({error:err,msg:"token invalid"});
+        return res.status(401).json({error:err,msg:"token invalid"});
 
     }
 }

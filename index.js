@@ -7,7 +7,7 @@ const passport_jwt = require('./config/passort_jwt');
 const cookieParser = require('cookie-parser');
 
 app.use(express.urlencoded({
-    extended: false
+    extended: true
 }))
 app.use(express.json());
 app.use(cookieParser());
@@ -17,10 +17,8 @@ app.use(function(err,req,res,next){
     console.log("errr");
     res.status(500).json({err:err});
 })
-app.use((req,res,next)=>{
-    res.status(404).json({error:'url not found'});
-})
-app.use('/profile', express.static('upload/profile'));
+
+app.use('/upload', express.static('upload'));
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -28,7 +26,9 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE');
     next();
 });
-app.use('/', require('./routes'));
-
+app.use('/api', require('./routes'));
+app.use((req,res,next)=>{
+    res.status(404).json({error:'url not found'});
+})
 
 app.listen(port, () => console.log(`Example app listening on port port! ${port}`));

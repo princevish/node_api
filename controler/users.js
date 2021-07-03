@@ -27,8 +27,8 @@ module.exports.userSign = async (req, res) => {
             email
         });
         if (!finduser) {
-            return res.status(303).json({
-                message: "User not found available"
+            return res.status(404).json({
+                message: "User not found "
             });
         } else {
             const pass = await bcrypt.compare(password, finduser.password)
@@ -38,17 +38,17 @@ module.exports.userSign = async (req, res) => {
                     email: finduser.email
                 }, process.env.SECRET_CODE);
 
-                return res.status(200).cookie('key', token, {
+                return res.status(202).cookie('key', token, {
                     sameSite: 'strict',
                     path: '/',
                     httpOnly: true,
-                    expires: new Date(new Date().getTime() + 100 * 1000)
+                    expires: new Date(new Date().getTime() + 1000 * 1000)
                 }).json({
                     id: finduser._id,
                     token: token
                 });
             } else {
-                return res.status(303).json({
+                return res.status(406).json({
                     message: "password not match"
                 });
             }
@@ -62,7 +62,7 @@ module.exports.userSign = async (req, res) => {
 }
 
 module.exports.userSignup = async (req, res) => {
-
+   
     try {
          /// validation check result
         const messages = []
@@ -73,11 +73,11 @@ module.exports.userSignup = async (req, res) => {
             for (const i of errors) {
                 messages.push(i);
             }
-            return res.status(303).json({
+            return res.status(400).json({
                 message: messages
             });
         }
-
+        
         const {
             email,
             name,
@@ -117,13 +117,13 @@ module.exports.userSignup = async (req, res) => {
             if(req.file.filename){
                 // profile image remove
             fs.unlinkSync(`upload/profile/${req.file.filename}`)}
-           return res.status(303).json({
-                message: "User email not available"
+           return res.status(302).json({
+             message: "User email not available"
             });
 
         }
     } catch (err) {
-       return res.status(303).json({
+       return res.status(403).json({
             message: err
         });
     }
@@ -144,7 +144,7 @@ module.exports.logOut=(req, res) => {
         }
 
     } catch (err) {
-        res.status(404).json({
+        res.status(403).json({
             error: err
         });
     }

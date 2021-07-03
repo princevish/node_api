@@ -13,6 +13,25 @@ const roomSchema = new mongoose.Schema({
         type: String,
 
     },
+    facility:{
+        wifi:{
+            type:Boolean,
+            default: false
+        },
+        food:{
+            type:Boolean,
+            default: false
+
+        },
+        water:{
+            type:Boolean,
+            default: false
+        },
+        electric:{
+            type:Boolean,
+            default: false
+        }
+    },
     details: {
         bathrooms: {
             type: Number,

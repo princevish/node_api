@@ -11,19 +11,10 @@ module.exports.registerValidator = () => {
 
         check('password')
         .notEmpty()
-        .withMessage('password is required')
-        .isLength({
-            min: 8
-        })
-        .withMessage('password must be 8 characters'),
+        .withMessage('password is required'),
         check('mobile')
         .notEmpty()
         .withMessage('mobile no. is required')
-        .isLength({
-            min: 10,
-            max: 10
-        })
-        .withMessage('mobile no. must be 10 digit'),
        
     ]
 }
@@ -41,27 +32,20 @@ module.exports.loginValidator = () => {
     ]
 }
 module.exports.roomValidator = () => {
-
     return [
-
         check('name').notEmpty().withMessage('name is required'),
         check('price').notEmpty().withMessage('price is required'),
         check('address').notEmpty().withMessage('address is required'),
-        check('description').notEmpty().withMessage('description is required'),
-        check('images').notEmpty().withMessage('image is required'),
-        check('listed_by').notEmpty().withMessage('owner is required'),
-        check('parking').notEmpty().withMessage('parking is required'),
-        check('bathrooms').notEmpty().withMessage('bathrooms is required'),
-        
-
-    ]
+         ]
 }
+const error = []
 
 module.exports.imagevalid=(req,res,next)=>{
+  console.log(req.file)
   if (typeof(req.file)=='undefined' || typeof(req.body)=='undefined'){
-      return res.status(400).json({error:"file not proble to send file"})
+      return res.status(400).json({error:"file not to find file"})
   }
-  console.log(req.file);
+ 
   if(!req.file.filename){
    return res.status(400).json({error:"image field required"})
   }
@@ -77,4 +61,46 @@ module.exports.imagevalid=(req,res,next)=>{
    return res.status(400).json({error:"file not supported"})
 }
   next()
+}
+
+module.exports.validroomimage=(req,res,next)=>{
+ 
+
+  if (typeof(req.files)=='undefined' || typeof(req.body)=='undefined'){
+      return res.status(400).json({error:"photo not proble to send file"})
+  }
+ 
+  if (req.files.length <= 0) {
+      return res.status(400).json({error:"`You must select at least 1 file."});
+    }
+
+  const error = []
+  const photo = []  
+  const countimage= req.files
+
+
+  countimage.map(img=>{
+   
+      if(img.mimetype == "image/png" || img.mimetype == "image/jpg" || img.mimetype == "image/jpeg") {
+    //
+          if(img.size > 1024*1024*3){
+             fs.unlinkSync(`upload/room/${img.filename}`)
+              error.push({error:"img to large 3mb",status:401})
+          }
+      photo.push({img:`upload/room/${img.filename}`}) 
+      }else{
+        
+        fs.unlinkSync(`upload/room/${img.filename}`)
+      error.push({error:"img to not support",status:401})
+}
+
+  })  
+
+  if(error.length != 0){
+    if(photo.length != 0) { photo.map(item=>{
+      fs.unlinkSync(item.img)
+    }) 
+    return res.status(400).json(error);
+  }}
+next()
 }
