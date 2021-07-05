@@ -41,8 +41,7 @@ module.exports.userSign = async (req, res) => {
                 return res.status(202).cookie('key', token, {
                     sameSite: 'strict',
                     path: '/',
-                    httpOnly: true,
-                    expires: new Date(new Date().getTime() + 1000 * 1000)
+                    httpOnly: true
                 }).json({
                     id: finduser._id,
                     token: token
@@ -107,7 +106,7 @@ module.exports.userSignup = async (req, res) => {
                 sameSite: 'strict',
                 path: '/',
                 httpOnly: true,
-                expires: new Date(new Date().getTime() + 100 * 1000)
+              
             }).json({
                 user: user,
                 token: token

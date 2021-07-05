@@ -6,6 +6,7 @@ const {
 const fs =require('fs')
 
 module.exports.getRoom = async (req, res) => {
+  
     const room = await Room.find({});
     res.status(200).json({
         data: room
@@ -58,34 +59,37 @@ module.exports.addRoom = async (req, res) => {
             name,
             price,
             address,
+            facility,
+            description,
+            details
         } = req.body;
         
         
 
       
         const createroom = await Room.create({
-            name:name,
-            price:price,
-            address:address,
+            name,
+            price,
+            address,
+            facility,
+            description,
+            details
 
            
         });
+        createroom.users.push(req.userID)
         const image =req.files
         image.map(item=>{
             createroom.images.push(`upload/room/${item.filename}`)
         })
         createroom.save()
-        res.status(303).json({
+        res.status(201).json({
             message: createroom
         });
-/* room = await createroom.populate('user', 'name').execPopulate();
-        res.status(200).json({
-            data: room
-        }); */
-       
+ 
     } catch (err) {
         
-       res.status(303).json({
+       res.status(403).json({
             messages: err
         });
     }

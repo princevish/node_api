@@ -6,11 +6,22 @@ const roomSchema = new mongoose.Schema({
 
     },
     price: {
-        type: Number,
+        type: String,
 
     },
     address: {
-        type: String,
+        add: {
+            type: String,
+
+        },
+        city: {
+            type: String,
+
+        },
+        state: {
+            type: String,
+
+        },
 
     },
     facility:{
@@ -32,17 +43,18 @@ const roomSchema = new mongoose.Schema({
             default: false
         }
     },
-    details: {
+     details: {
         bathrooms: {
             type: Number,
-
         },
-        listed_by: {
-            type: String,
-
+        rooms: {
+            type: Number,
+        },
+        kitchen:{
+            type: Number,
         },
         parking: {
-            type: String,
+            type: Number,
 
         },
 

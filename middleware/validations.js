@@ -25,17 +25,14 @@ module.exports.loginValidator = () => {
         check('password')
         .notEmpty()
         .withMessage('password is required')
-        .isLength({
-            min: 8
-        })
-        .withMessage('password must be 8 characters')
+       
     ]
 }
 module.exports.roomValidator = () => {
     return [
         check('name').notEmpty().withMessage('name is required'),
         check('price').notEmpty().withMessage('price is required'),
-        check('address').notEmpty().withMessage('address is required'),
+        
          ]
 }
 const error = []

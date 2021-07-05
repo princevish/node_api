@@ -2,8 +2,13 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/usersModel');
 
 const auth = async(req,res,next)=>{
+    
     try{
          const usercookie =req.cookies.key;
+
+         if (!usercookie){
+           return res.status(401).send({msg:"token invalid"});
+         }
          const token=jwt.verify(usercookie,process.env.SECRET_CODE);
          console.log(token);
          const userfind =await User.findById({_id:token.id});
@@ -12,7 +17,8 @@ const auth = async(req,res,next)=>{
          req.userEmail=token.email;
          next()
     }catch(err){
-        return res.status(401).json({error:err,msg:"token invalid"});
+      
+        return res.status(401).send({msg:"token invalid"});
 
     }
 }
