@@ -27,7 +27,7 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE');
   next();
 });
-app.use('/', require('./routes'));
+app.use('/api', require('./routes'));
 app.use((req,res,next)=>{
     res.status(404).json({error:'url not found'});
 })

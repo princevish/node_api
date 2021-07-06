@@ -19,12 +19,23 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
+        select: false,
         required: true
     },
     image: {
         type: String,
        
     },
+    room: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Room'
+    }],
+    fav: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Room',
+        unique: false
+       
+    }]
 
 
 }, {

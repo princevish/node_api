@@ -6,11 +6,34 @@ const {
 const fs =require('fs')
 
 module.exports.getRoom = async (req, res) => {
-  
-    const room = await Room.find({});
+    const roomuser=await Room.find({}).populate('users')
     res.status(200).json({
-        data: room
+        data: roomuser
     });
+
+}
+
+module.exports.roomfav = async (req, res) => {
+    
+    const user = await User.findOne({_id:req.userID})
+    
+  
+       let listeoom = user.fav.map(e=>e)
+       if(listeoom.includes(req.params.id)){
+       
+          user.fav.pull(req.params.id);
+          await user.save()
+          res.status(201).json({
+          data: user
+          });
+       }else{
+
+        user.fav.push(req.params.id);
+              await user.save()
+        res.status(200).json({
+        data: user 
+       });}
+       
 
 }
 
@@ -45,15 +68,7 @@ module.exports.addRoom = async (req, res) => {
              });
          }
   
-    /*  wifi,
-            food,
-            water,
-            electric,
-            bathrooms,
-            listed_by,
-            parking,
-            description, */
-     
+   
      
     const {
             name,
@@ -77,7 +92,13 @@ module.exports.addRoom = async (req, res) => {
 
            
         });
-        createroom.users.push(req.userID)
+        const user = await User.findOne({_id:req.userID})
+    
+        user.room.push(createroom._id)
+        await user.save()
+       
+        createroom.users=req.userID
+        
         const image =req.files
         image.map(item=>{
             createroom.images.push(`upload/room/${item.filename}`)
@@ -91,7 +112,7 @@ module.exports.addRoom = async (req, res) => {
         
        res.status(403).json({
             messages: err
-        });
+        });s
     }
 
 

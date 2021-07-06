@@ -25,7 +25,7 @@ module.exports.userSign = async (req, res) => {
         } = req.body
         const finduser = await User.findOne({
             email
-        });
+        }).select('+password');
         if (!finduser) {
             return res.status(404).json({
                 message: "User not found "
@@ -147,5 +147,19 @@ module.exports.logOut=(req, res) => {
             error: err
         });
     }
+
+}
+module.exports.list = async(req,res)=>{ 
+    const user = await User.findOne({_id:req.userID})
+     res.status(200).json({
+          data: user
+          })   
+}
+module.exports.Fav = async (req, res) => {
+    const roomuser=await User.findOne({_id:req.userID}).populate({path:'fav',populate:'users'})
+    
+    res.status(200).json({
+        data: roomuser
+    })
 
 }

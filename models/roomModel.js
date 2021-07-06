@@ -59,10 +59,10 @@ const roomSchema = new mongoose.Schema({
         },
 
     },
-    users: [{
+    users: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
-    }],
+    },
     description: {
         type: String,
 
@@ -75,6 +75,6 @@ const roomSchema = new mongoose.Schema({
     timestamps: true
 });
 
-const roomModel = mongoose.model('room', roomSchema);
+const roomModel = mongoose.model('Room', roomSchema);
 
 module.exports = roomModel;
