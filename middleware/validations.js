@@ -39,7 +39,7 @@ module.exports.imagevalid = (req, res, next) => {
     req.file.mimetype == "image/jpeg"
   ) {
     //
-    if (req.file.size > 1024 * 1024 * 3) {
+    if (req.file.size > 1024 * 1024 * 6) {
       fs.unlinkSync(`upload/profile/${req.file.filename}`);
       return res.status(400).json({ error: "file to large 3mb" });
     }
@@ -70,7 +70,7 @@ module.exports.validroomimage = (req, res, next) => {
       img.mimetype == "image/jpeg"
     ) {
       //
-      if (img.size > 1024 * 1024 * 3) {
+      if (img.size > 1024 * 1024 * 6) {
         fs.unlinkSync(`upload/room/${img.filename}`);
         error.push({ error: "img to large 3mb", status: 401 });
       }
@@ -83,8 +83,7 @@ module.exports.validroomimage = (req, res, next) => {
 
   if (error.length != 0) {
     if (photo.length != 0) {
-      photo.map((item) => {
-        
+      photo.map((item) => { 
         fs.unlinkSync(item.img);
       });
       return res.status(400).json(error);

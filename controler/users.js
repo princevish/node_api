@@ -126,7 +126,7 @@ module.exports.logOut = (req, res) => {
   try {
     if (req.cookies.key) {
       res.clearCookie("key");
-      res.status(302).json({
+      res.status(200).json({
         msg: "logout",
       });
     } else {

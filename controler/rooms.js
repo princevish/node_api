@@ -4,7 +4,7 @@ const { validationResult } = require("express-validator");
 const fs = require("fs");
 
 module.exports.getRoom = async (req, res) => {
-  const roomuser = await Room.find({}).populate("users");
+  const roomuser = await Room.find({}).sort({'updatedAt':-1}).limit(Number(req.params.id)).populate("users");
   res.status(200).json({
     data: roomuser,
   });
@@ -93,7 +93,7 @@ module.exports.addRoom = async (req, res) => {
 
 module.exports.roomview = async (req, res) => {
   try {
-    const user = await Room.findOne({ _id: req.params.id }).populate("users");
+    const user = await Room.findOne({ _id: req.params.id }).sort({'updatedAt':-1}).populate("users");
 
     return res.status(200).json({
       data: user,
@@ -110,7 +110,7 @@ module.exports.city = async (req, res) => {
     const user = await Room.find({
       "address.state": req.params.state,
       "address.city": req.params.city,
-    }).populate("users");
+    }).sort({'updatedAt':-1}).populate("users");
 
     return res.status(200).json({
       data: user,
@@ -126,7 +126,7 @@ module.exports.state = async (req, res) => {
   try {
     const user = await Room.find({
       "address.state": req.params.state,
-    }).populate("users");
+    }).sort({'updatedAt':-1}).populate("users");
 
     return res.status(200).json({
       data: user,
